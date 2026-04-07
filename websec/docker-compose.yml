@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # servizio web: apache + PHP
+  web:
+    build: ./apache-php
+    ports:
+      - "8080:80" # si accede tramite http://localhost:8080
+    volumes:
+      - ./apache-php/src:/var/www/html
+    networks:
+      - secure-net
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: password_sicura
+      MYSQL_DATABASE: websec_db
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+    networks:
+      - secure-net
+
+networks:
+  secure-net:
+    driver: bridge
